@@ -92,7 +92,9 @@ spec:
   restartPolicy: OnFailure
   containers:
     - name: minio-mc
-      image: minio/mc
+      # This needs to be pinned pre- RELEASE.2025-05-21T01-59-54Z because it introduced a breaking change
+      # cf. https://github.com/minio/mc/pull/5201, "removing config cmd"
+      image: {{ .Values.minio.mcImage | default "minio/mc:RELEASE.2025-04-16T18-13-26Z" }}
       command: ["/bin/sh", "-c",
         "until (/usr/bin/mc config host add myminio $MINIO_ENDPOINT $MINIO_ACCESS_KEY $MINIO_SECRET_KEY) do echo '...waiting...' && sleep 1; done;
           /usr/bin/mc mb --ignore-existing myminio/state-storage;
